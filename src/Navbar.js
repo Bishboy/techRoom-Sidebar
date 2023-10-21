@@ -1,25 +1,17 @@
-import React,{useState , useEffect, useRef} from 'react';
-import { FaBars, FaTwitter, FaSearch } from 'react-icons/fa';
+import React,{useState } from 'react';
+import { FaBars, FaTimes, FaSearch  } from 'react-icons/fa';
 import { links, social } from './data';
+import { useGlobalContext } from './context';
 import logo from './logo/coloredtransparent 1 (1).png'
 
 
 const Navbar = () =>{
-    const [showLinks, setShowLinks] = useState(false)
+
+    const { showLinks, setShowLinks} = useGlobalContext();  
+   
     const [name, setName] = useState('')
-    let linksContainerRef = useRef(null);
-    let linkRef = useRef(null)
+    
 
-
-    useEffect(()=>{
-        const linkHeight = linkRef.current.getBoundingClientRect().height
-        if(showLinks){
-            linksContainerRef.current.style.height=`${linkHeight}px`
-        }
-        else{
-            linksContainerRef.current.style.height =`0px`
-        }
-    },[showLinks])
 
     const handleSubmit = (e)=>{
         e.preventDefault();
@@ -31,9 +23,8 @@ const Navbar = () =>{
             <div className="nav_center">
                 <div className="nav_header">
                     <img src={logo} alt='logo'  />
-                    <button className="nav_toggle"
-                     onClick={()=>setShowLinks(!showLinks)}>
-                        <FaBars />
+                    <button onClick={()=>setShowLinks(!showLinks)} className="nav_toggle">
+                        {showLinks? <FaTimes /> : <FaBars />}
                     </button>
                 </div>
                 <form className="search" onSubmit={handleSubmit}>
@@ -47,13 +38,17 @@ const Navbar = () =>{
                     </div>
                 </form>
 
-                <div className="links_container" ref={linksContainerRef}>
-                    <ul className="links" ref={linkRef}>
+                <div className= {showLinks? 'links_container show_links_container': 'links_container'} >
+                    <ul className="links">
                         {links.map((link)=>{
-                            const{id, url, text} = link;
+                            const{id, url, text , icon} = link;
                             return(
                                <li key={id}>
-                                <a href={url}> {text} </a>
+                                <a href={url}>
+                                     {icon} 
+                                     {text}
+                                     
+                                </a>
                                </li>
                             )
                         })}
